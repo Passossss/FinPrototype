@@ -74,6 +74,7 @@
     --color-red-400: oklch(.704 .191 22.216);
     --color-red-500: oklch(.637 .237 25.331);
     --color-red-600: oklch(.577 .245 27.325);
+    --color-red-700: oklch(.505 .213 27.518);
     --color-red-900: oklch(.396 .141 25.723);
     --color-red-950: oklch(.258 .092 26.042);
     --color-orange-600: oklch(.646 .222 41.116);
@@ -730,6 +731,10 @@
     margin-top: auto;
   }
 
+  .mr-1 {
+    margin-right: calc(var(--spacing) * 1);
+  }
+
   .mr-2 {
     margin-right: calc(var(--spacing) * 2);
   }
@@ -1075,10 +1080,6 @@
     width: calc(var(--spacing) * 48);
   }
 
-  .w-56 {
-    width: calc(var(--spacing) * 56);
-  }
-
   .w-64 {
     width: calc(var(--spacing) * 64);
   }
@@ -1335,6 +1336,10 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
   .grid-cols-\[0_1fr\] {
     grid-template-columns: 0 1fr;
   }
@@ -1581,6 +1586,11 @@
     border-top-width: 1px;
   }
 
+  .border-t-4 {
+    border-top-style: var(--tw-border-style);
+    border-top-width: 4px;
+  }
+
   .border-r {
     border-right-style: var(--tw-border-style);
     border-right-width: 1px;
@@ -1594,6 +1604,11 @@
   .border-l {
     border-left-style: var(--tw-border-style);
     border-left-width: 1px;
+  }
+
+  .border-l-4 {
+    border-left-style: var(--tw-border-style);
+    border-left-width: 4px;
   }
 
   .border-dashed {
@@ -1633,6 +1648,16 @@
 
   .border-primary {
     border-color: var(--primary);
+  }
+
+  .border-primary\/20 {
+    border-color: var(--primary);
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .border-primary\/20 {
+      border-color: color-mix(in oklab, var(--primary) 20%, transparent);
+    }
   }
 
   .border-sidebar-border {
@@ -2153,6 +2178,10 @@
 
   .text-foreground {
     color: var(--foreground);
+  }
+
+  .text-gray-300 {
+    color: var(--color-gray-300);
   }
 
   .text-gray-400 {
@@ -2949,6 +2978,12 @@
   }
 
   @media (hover: hover) {
+    .hover\:text-red-700:hover {
+      color: var(--color-red-700);
+    }
+  }
+
+  @media (hover: hover) {
     .hover\:text-sidebar-accent-foreground:hover {
       color: var(--sidebar-accent-foreground);
     }
@@ -2995,6 +3030,10 @@
 
   .focus\:z-10:focus {
     z-index: 10;
+  }
+
+  .focus\:border-primary:focus {
+    border-color: var(--primary);
   }
 
   .focus\:bg-accent:focus {
@@ -4132,6 +4171,10 @@
 
   .dark\:bg-red-900:is(.dark *) {
     background-color: var(--color-red-900);
+  }
+
+  .dark\:text-gray-100:is(.dark *) {
+    color: var(--color-gray-100);
   }
 
   .dark\:text-gray-300:is(.dark *) {

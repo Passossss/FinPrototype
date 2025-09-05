@@ -1,13 +1,15 @@
 import { useState } from "react";
-import { Home, Users, Tag, DollarSign, BarChart3, CreditCard, Pin, Grip, ChevronLeft, ChevronRight } from "lucide-react";
+import { Home, Users, Tag, DollarSign, BarChart3, CreditCard, Pin, Grip, ChevronLeft, ChevronRight, UserCog, Settings2, Menu } from "lucide-react";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
+import { useUser } from "../contexts/UserContext";
 
 interface MenuItem {
   id: string;
   label: string;
   icon: any;
   isPinned: boolean;
+  adminOnly?: boolean;
 }
 
 interface SidebarProps {
@@ -18,19 +20,25 @@ interface SidebarProps {
 }
 
 export function Sidebar({ currentPage, onPageChange, isCollapsed, onCollapsedChange }: SidebarProps) {
+  const { isAdmin } = useUser();
   const [menuItems, setMenuItems] = useState<MenuItem[]>([
-    { id: "dashboard", label: "Dashboard", icon: Home, isPinned: true },
-    { id: "transactions", label: "Transações", icon: DollarSign, isPinned: true },
-    { id: "categories", label: "Categorias", icon: Tag, isPinned: true },
-    { id: "users", label: "Usuários", icon: Users, isPinned: false },
-    { id: "reports", label: "Relatórios", icon: BarChart3, isPinned: false },
-    { id: "cards", label: "Cartões", icon: CreditCard, isPinned: false },
+    { id: "dashboard", label: "Dashboard", icon: Home, isPinned: true, adminOnly: false },
+    { id: "transactions", label: "Transações", icon: DollarSign, isPinned: true, adminOnly: false },
+    { id: "categories", label: "Categorias", icon: Tag, isPinned: true, adminOnly: false },
+    { id: "users", label: "Cadastro de Usuário", icon: Users, isPinned: false, adminOnly: false },
+    { id: "user-management", label: "Gerenciar Usuários", icon: UserCog, isPinned: false, adminOnly: true },
+    { id: "menu-management", label: "Gerenciar Menus", icon: Menu, isPinned: false, adminOnly: true },
+    { id: "reports", label: "Relatórios", icon: BarChart3, isPinned: false, adminOnly: false },
+    { id: "cards", label: "Cartões", icon: CreditCard, isPinned: false, adminOnly: false },
   ]);
 
   const [draggedItem, setDraggedItem] = useState<string | null>(null);
 
-  const pinnedItems = menuItems.filter(item => item.isPinned);
-  const unpinnedItems = menuItems.filter(item => !item.isPinned);
+  // Filtrar itens baseado nas permissões do usuário
+  const visibleItems = menuItems.filter(item => !item.adminOnly || isAdmin);
+  
+  const pinnedItems = visibleItems.filter(item => item.isPinned);
+  const unpinnedItems = visibleItems.filter(item => !item.isPinned);
 
   const togglePin = (itemId: string) => {
     setMenuItems(items =>
@@ -77,11 +85,11 @@ export function Sidebar({ currentPage, onPageChange, isCollapsed, onCollapsedCha
       >
         <Button
           variant={isActive ? "default" : "ghost"}
-          className={`w-full justify-start gap-3 pr-8 ${
+          className={`w-full ${isCollapsed ? 'justify-center px-3' : 'justify-start pr-8'} gap-3 ${
             isActive
               ? "bg-primary text-white"
               : "text-gray-700 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700"
-          } ${isCollapsed ? 'px-2' : ''}`}
+          }`}
           onClick={() => onPageChange(item.id)}
           title={isCollapsed ? item.label : undefined}
         >
@@ -109,6 +117,8 @@ export function Sidebar({ currentPage, onPageChange, isCollapsed, onCollapsedCha
   return (
     <aside className={`fixed left-0 top-16 bottom-0 ${isCollapsed ? 'w-16' : 'w-64'} bg-gray-100 dark:bg-gray-800 transition-all duration-300 z-40`}>
       <div className="flex flex-col h-full">
+
+
         <div className="p-4 flex-1 overflow-y-auto">
           {/* Toggle Button */}
           <div className="flex justify-end mb-4">

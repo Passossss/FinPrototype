@@ -3,7 +3,9 @@ import { Bell, User, Search, Sun, Moon, Settings, LogOut, LogIn, UserPlus, KeyRo
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Input } from "./ui/input";
+import { useUser } from "../contexts/UserContext";
 import finLogo from "figma:asset/cb6e84f9267ba7d9df65b2df986e7030850c04ce.png";
+import userPhoto from "figma:asset/a782661ee70c59f23a38d1d1770684fad77db575.png";
 
 interface HeaderProps {
   isDark: boolean;
@@ -26,6 +28,7 @@ export function Header({ isDark, onThemeToggle, isSidebarCollapsed, onSidebarTog
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const { isAdmin } = useUser();
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -75,7 +78,7 @@ export function Header({ isDark, onThemeToggle, isSidebarCollapsed, onSidebarTog
           <div className="flex items-center gap-2 animate-in slide-in-from-right-2">
             <Input
               placeholder="Pesquisar..."
-              className="w-64"
+              className="w-64 bg-white dark:bg-gray-900 border-2 border-primary focus:ring-primary focus:border-primary"
               autoFocus
               onBlur={() => setIsSearchOpen(false)}
             />
@@ -84,31 +87,48 @@ export function Header({ isDark, onThemeToggle, isSidebarCollapsed, onSidebarTog
         
         {!isSearchOpen && (
           <Button
-            variant="ghost"
             size="icon"
             onClick={() => setIsSearchOpen(true)}
+            className="bg-primary hover:bg-primary/90 text-white"
           >
             <Search className="h-5 w-5" />
           </Button>
         )}
         
-        <div className="relative" ref={dropdownRef}>
-          <button 
-            className="p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-          >
-            <Avatar className="h-8 w-8 cursor-pointer">
-              <AvatarImage src={finLogo} alt="Profile" className="object-cover" />
-              <AvatarFallback className="bg-primary text-primary-foreground">
-                <User className="h-4 w-4" />
-              </AvatarFallback>
-            </Avatar>
-          </button>
+        <div className="flex items-center gap-2">
+          {/* Badge Administrador - só mostra se for admin */}
+          {isAdmin && (
+            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-primary text-white">
+              Administrador
+            </span>
+          )}
+          
+          <div className="relative" ref={dropdownRef}>
+            <button 
+              className="p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            >
+              <Avatar className="h-8 w-8 cursor-pointer">
+                <AvatarImage src={userPhoto} alt="Profile" className="object-cover" />
+                <AvatarFallback className="bg-primary text-primary-foreground">
+                  GP
+                </AvatarFallback>
+              </Avatar>
+            </button>
           
           {isDropdownOpen && (
-            <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-md shadow-lg z-[100] py-1">
-              <div className="px-3 py-2 text-sm font-medium text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-600">
-                Menu do usuário
+            <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-md shadow-lg z-[100] py-1">
+              <div className="flex items-center px-3 py-3 border-b border-gray-200 dark:border-gray-600">
+                <Avatar className="h-10 w-10 mr-3">
+                  <AvatarImage src={userPhoto} alt="Profile" className="object-cover" />
+                  <AvatarFallback className="bg-primary text-primary-foreground">
+                    GP
+                  </AvatarFallback>
+                </Avatar>
+                <div>
+                  <div className="font-medium text-gray-900 dark:text-gray-100">Gustavo Passos</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">gustavo@email.com</div>
+                </div>
               </div>
               
               <button
@@ -168,6 +188,7 @@ export function Header({ isDark, onThemeToggle, isSidebarCollapsed, onSidebarTog
               </button>
             </div>
           )}
+          </div>
         </div>
       </div>
     </header>

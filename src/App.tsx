@@ -3,6 +3,8 @@ import { Header } from "./components/Header";
 import { Sidebar } from "./components/Sidebar";
 import { Dashboard } from "./components/Dashboard";
 import { UserRegistration } from "./components/UserRegistration";
+import { UserManagement } from "./components/UserManagement";
+import { MenuManagement } from "./components/MenuManagement";
 import { CategoryRegistration } from "./components/CategoryRegistration";
 import { TransactionRegistration } from "./components/TransactionRegistration";
 import { Reports } from "./components/Reports";
@@ -12,6 +14,7 @@ import { Login } from "./components/Login";
 import { CreateAccount } from "./components/CreateAccount";
 import { ForgotPassword } from "./components/ForgotPassword";
 import { Toaster } from "./components/ui/sonner";
+import { UserProvider } from "./contexts/UserContext";
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState("dashboard");
@@ -48,6 +51,10 @@ export default function App() {
         return <Dashboard />;
       case "users":
         return <UserRegistration />;
+      case "user-management":
+        return <UserManagement />;
+      case "menu-management":
+        return <MenuManagement />;
       case "categories":
         return <CategoryRegistration />;
       case "transactions":
@@ -72,38 +79,42 @@ export default function App() {
   // Se for uma página de autenticação, renderiza em tela cheia
   if (['login', 'create-account', 'forgot-password'].includes(currentPage)) {
     return (
-      <div className="min-h-screen">
-        {renderPage()}
-        <Toaster />
-      </div>
+      <UserProvider>
+        <div className="min-h-screen">
+          {renderPage()}
+          <Toaster />
+        </div>
+      </UserProvider>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-800 transition-colors">
-      <Header 
-        isDark={isDark}
-        onThemeToggle={toggleTheme}
-        isSidebarCollapsed={isSidebarCollapsed}
-        onSidebarToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-        onPageChange={setCurrentPage}
-      />
-      <Sidebar 
-        currentPage={currentPage} 
-        onPageChange={setCurrentPage}
-        isCollapsed={isSidebarCollapsed}
-        onCollapsedChange={setIsSidebarCollapsed}
-      />
-      
-      <main className={`${isSidebarCollapsed ? 'ml-16' : 'ml-64'} pt-16 transition-all duration-300`}>
-        <div className="p-6 min-h-screen bg-white dark:bg-gray-900 rounded-tl-3xl">
-          <div className="max-w-7xl mx-auto">
-            {renderPage()}
+    <UserProvider>
+      <div className="min-h-screen bg-gray-100 dark:bg-gray-800 transition-colors">
+        <Header 
+          isDark={isDark}
+          onThemeToggle={toggleTheme}
+          isSidebarCollapsed={isSidebarCollapsed}
+          onSidebarToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+          onPageChange={setCurrentPage}
+        />
+        <Sidebar 
+          currentPage={currentPage} 
+          onPageChange={setCurrentPage}
+          isCollapsed={isSidebarCollapsed}
+          onCollapsedChange={setIsSidebarCollapsed}
+        />
+        
+        <main className={`${isSidebarCollapsed ? 'ml-16' : 'ml-64'} pt-16 transition-all duration-300`}>
+          <div className="p-6 min-h-screen bg-white dark:bg-gray-900 rounded-tl-3xl border-t-4 border-l-4 border-primary/20">
+            <div className="max-w-7xl mx-auto">
+              {renderPage()}
+            </div>
           </div>
-        </div>
-      </main>
-      
-      <Toaster />
-    </div>
+        </main>
+        
+        <Toaster />
+      </div>
+    </UserProvider>
   );
 }

@@ -9,12 +9,13 @@ import { Separator } from "./ui/separator";
 import { Badge } from "./ui/badge";
 import { User, Shield, Mail, Phone, Bell, Lock, Palette, Globe } from "lucide-react";
 import { toast } from "sonner@2.0.3";
+import { useUser } from "../contexts/UserContext";
 
 export function Settings() {
-  const [userType, setUserType] = useState("user");
+  const { userType, setUserType } = useUser();
   const [profileData, setProfileData] = useState({
-    name: "João Silva",
-    email: "joao.silva@email.com",
+    name: "Gustavo Passos",
+    email: "gustavo@email.com",
     phone: "(11) 99999-9999",
     language: "pt-BR"
   });
@@ -35,7 +36,7 @@ export function Settings() {
     toast.success("Configurações salvas com sucesso!");
   };
 
-  const handleUserTypeChange = (type: string) => {
+  const handleUserTypeChange = (type: 'admin' | 'normal') => {
     setUserType(type);
     toast.success(`Perfil alterado para ${type === 'admin' ? 'Administrador' : 'Usuário Normal'}`);
   };
@@ -62,7 +63,7 @@ export function Settings() {
             </div>
             <Badge variant={userType === 'admin' ? 'default' : 'secondary'} className="flex items-center gap-1">
               {userType === 'admin' ? <Shield className="h-3 w-3" /> : <User className="h-3 w-3" />}
-              {userType === 'admin' ? 'Administrador' : 'Usuário'}
+              {userType === 'admin' ? 'Administrador' : 'Usuário Normal'}
             </Badge>
           </div>
         </CardHeader>
@@ -126,7 +127,7 @@ export function Settings() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="user">
+                  <SelectItem value="normal">
                     <div className="flex items-center gap-2">
                       <User className="h-4 w-4" />
                       Usuário Normal
